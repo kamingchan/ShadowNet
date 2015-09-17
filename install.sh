@@ -81,7 +81,9 @@ function get_system()
 # Pre-installation settings
 function pre_install()
 {
-    echo "please choose the type of your VPS(Xen、KVM: 1  ,  OpenVZ: 2):"
+    echo "please choose the type of your VPS:"
+    echo "1) Xen、KVM"
+    echo "2) OpenVZ"
     read -p "your choice(1 or 2):" os_choice
     if [ "$os_choice" = "1" ]; then
         os="1"
@@ -95,46 +97,61 @@ function pre_install()
                 exit 1
             fi
     fi
+    echo ""
     echo "please input the ip of your abroad VPS:"
     read -p "ip of abroad VPS:" server
     if [ "$server" = "" ]; then
         exit 1
     fi
+    echo ""
+    echo "Please input number of public network:"
+    read -p "(Default eth0):" ethX
+    if [ "$ethX" = "" ]; then
+        ethX="eth0"
+    fi
+    echo ""
     echo "Please input password for shadowsocks-libev:"
     read -p "(Default password: myss):" shadowsockspwd
     if [ "$shadowsockspwd" = "" ]; then
         shadowsockspwd="myss"
     fi
+    echo ""
     echo -e "Please input port for shadowsocks-libev:"
     read -p "(Default password: 443):" shadowsocksport
     if [ "$shadowsocksport" = "" ]; then
         shadowsocksport="443"
     fi
+    echo ""
     echo -e "Please input method for shadowsocks-libev:"
     read -p "(Default method: chacha20):" shadowsocksmethod
     if [ "$shadowsocksmethod" = "" ]; then
         shadowsocksmethod="chacha20"
     fi
+    echo ""
     echo "please input the ip (or domain) of your China VPS:"
     read -p "ip or domain(default_vale:${IP}):" vps_ip
     if [ "$vps_ip" = "" ]; then
         vps_ip=$IP
     fi
+    echo ""
     echo "please input the cert country(C):"
     read -p "C(default value:com):" my_cert_c
     if [ "$my_cert_c" = "" ]; then
         my_cert_c="com"
     fi
+    echo ""
     echo "please input the cert organization(O):"
     read -p "O(default value:myvpn):" my_cert_o
     if [ "$my_cert_o" = "" ]; then
         my_cert_o="myvpn"
     fi
+    echo ""
     echo "please input the cert common name(CN):"
     read -p "CN(default value:VPN CA):" my_cert_cn
     if [ "$my_cert_cn" = "" ]; then
         my_cert_cn="VPN CA"
     fi
+    echo ""
     # update necessary lib
     if [ "$system_str" = "0" ]; then
         yum -y update
@@ -147,70 +164,10 @@ function pre_install()
         apt-get -y install libpam0g-dev libssl-dev make gcc wget 
         apt-get -y install unzip curl build-essential autoconf libtool
     fi
-    #Current folder
+    # get Current folder
     cur_dir=`pwd`
     cd $cur_dir
-    #download ss
-    if [ "$system_str" = "0" ]; then
-        if [ -f shadowsocks-libev.zip ];then
-            echo "shadowsocks-libev.zip [found]"
-        else
-            if ! wget --no-check-certificate https://github.com/shadowsocks/shadowsocks-libev/archive/master.zip -O shadowsocks-libev.zip;then
-                echo "Failed to download shadowsocks-libev.zip"
-                exit 1
-            fi
-        fi
-        unzip shadowsocks-libev.zip
-        if [ $? -eq 0 ];then
-            echo "Unzip success"
-        else
-            echo "Unzip shadowsocks-libev failed!"
-            exit 1
-        fi
-        # Download start script
-        if ! wget --no-check-certificate https://raw.githubusercontent.com/bazingaterry/CHN_ROUTER_VPN/master/shadowsocks-libev; then
-            echo "Failed to download shadowsocks-libev start script!"
-            exit 1
-        fi
-    else
-        if [ -f shadowsocks-libev.zip ];then
-            echo "shadowsocks-libev.zip [found]"
-        else
-            if ! wget --no-check-certificate https://github.com/shadowsocks/shadowsocks-libev/archive/master.zip -O shadowsocks-libev.zip;then
-                echo "Failed to download shadowsocks-libev.zip"
-                exit 1
-            fi
-        fi
-        unzip shadowsocks-libev.zip
-        if [ $? -eq 0 ];then
-            echo "Unzip success"
-            if ! wget --no-check-certificate https://raw.githubusercontent.com/bazingaterry/CHN_ROUTER_VPN/master/shadowsocks-libev-ubuntu; then
-                echo "Failed to download shadowsocks-libev start script!"
-                exit 1
-            fi
-        else
-            echo ""
-            echo "Unzip shadowsocks-libev failed!"
-            exit 1
-        fi
-    fi
-    #download strongswan
-    if [ -f strongswan.tar.gz ];then
-        echo -e "strongswan.tar.gz [\033[32;1mfound\033[0m]"
-    else
-        if ! wget http://download.strongswan.org/strongswan.tar.gz;then
-            echo "Failed to download strongswan.tar.gz"
-            exit 1
-        fi
-    fi
-    tar xzf strongswan.tar.gz
-    if [ $? -eq 0 ];then
-        echo "unzip succeess"
-    else
-        echo "Unzip strongswan.tar.gz failed!"
-        exit 1
-    fi
-    #add ss config
+    # add ss config
     if [ ! -d /etc/shadowsocks-libev ];then
         mkdir /etc/shadowsocks-libev
     fi
@@ -244,6 +201,29 @@ function install_ss_libev_CentOS()
         echo "shadowsocks-libev has been installed!"
         exit 0
     else
+        # download ss
+        cd $cur_dir
+        if [ -f shadowsocks-libev.zip ];then
+            echo "shadowsocks-libev.zip [found]"
+        else
+            if ! wget --no-check-certificate https://github.com/shadowsocks/shadowsocks-libev/archive/master.zip -O shadowsocks-libev.zip;then
+                echo "Failed to download shadowsocks-libev.zip"
+                exit 1
+            fi
+        fi
+        unzip shadowsocks-libev.zip
+        if [ $? -eq 0 ];then
+            echo "Unzip success"
+        else
+            echo "Unzip shadowsocks-libev failed!"
+            exit 1
+        fi
+        # Download start script
+        if ! wget --no-check-certificate https://raw.githubusercontent.com/bazingaterry/CHN_ROUTER_VPN/master/shadowsocks-libev; then
+            echo "Failed to download shadowsocks-libev start script!"
+            exit 1
+        fi
+        # compile ss
         ./configure
         make && make install
         if [ $? -eq 0 ]; then
@@ -280,6 +260,27 @@ function install_ss_libev_Ubuntu()
         echo "shadowsocks-libev has been installed!"
         exit 0
     else
+        # download ss
+        if [ -f shadowsocks-libev.zip ];then
+            echo "shadowsocks-libev.zip [found]"
+        else
+            if ! wget --no-check-certificate https://github.com/shadowsocks/shadowsocks-libev/archive/master.zip -O shadowsocks-libev.zip;then
+                echo "Failed to download shadowsocks-libev.zip"
+                exit 1
+            fi
+        fi
+        unzip shadowsocks-libev.zip
+        if [ $? -eq 0 ];then
+            echo "Unzip success"
+            if ! wget --no-check-certificate https://raw.githubusercontent.com/bazingaterry/CHN_ROUTER_VPN/master/shadowsocks-libev-ubuntu; then
+                echo "Failed to download shadowsocks-libev start script!"
+                exit 1
+            fi
+        else
+            echo "Unzip shadowsocks-libev failed!"
+            exit 1
+        fi
+        # compile ss
         ./configure
         make && make install
         if [ $? -eq 0 ]; then
@@ -410,6 +411,22 @@ EOF
 
 function install_strongswan_Ubuntu()
 {
+    #download strongswan
+    if [ -f strongswan.tar.gz ];then
+        echo -e "strongswan.tar.gz [\033[32;1mfound\033[0m]"
+    else
+        if ! wget http://download.strongswan.org/strongswan.tar.gz;then
+            echo "Failed to download strongswan.tar.gz"
+            exit 1
+        fi
+    fi
+    tar xzf strongswan.tar.gz
+    if [ $? -eq 0 ];then
+        echo "unzip succeess"
+    else
+        echo "Unzip strongswan.tar.gz failed!"
+        exit 1
+    fi
     #compile strongswan
     cd $cur_dir/strongswan-*/
     if [ "$os" = "1" ]; then
@@ -566,16 +583,16 @@ function set_iptables()
         iptables -A FORWARD -s 10.31.0.0/24  -j ACCEPT
         iptables -A FORWARD -s 10.31.1.0/24  -j ACCEPT
         iptables -A FORWARD -s 10.31.2.0/24  -j ACCEPT
-        iptables -A INPUT -i eth0 -p esp -j ACCEPT
-        iptables -A INPUT -i eth0 -p udp --dport 500 -j ACCEPT
-        iptables -A INPUT -i eth0 -p tcp --dport 500 -j ACCEPT
-        iptables -A INPUT -i eth0 -p udp --dport 4500 -j ACCEPT
-        iptables -A INPUT -i eth0 -p udp --dport 1701 -j ACCEPT
-        iptables -A INPUT -i eth0 -p tcp --dport 1723 -j ACCEPT
+        iptables -A INPUT -i $ethX -p esp -j ACCEPT
+        iptables -A INPUT -i $ethX -p udp --dport 500 -j ACCEPT
+        iptables -A INPUT -i $ethX -p tcp --dport 500 -j ACCEPT
+        iptables -A INPUT -i $ethX -p udp --dport 4500 -j ACCEPT
+        iptables -A INPUT -i $ethX -p udp --dport 1701 -j ACCEPT
+        iptables -A INPUT -i $ethX -p tcp --dport 1723 -j ACCEPT
         iptables -A FORWARD -j REJECT
-        iptables -t nat -A POSTROUTING -s 10.31.0.0/24 -o eth0 -j MASQUERADE
-        iptables -t nat -A POSTROUTING -s 10.31.1.0/24 -o eth0 -j MASQUERADE
-        iptables -t nat -A POSTROUTING -s 10.31.2.0/24 -o eth0 -j MASQUERADE
+        iptables -t nat -A POSTROUTING -s 10.31.0.0/24 -o $ethX -j MASQUERADE
+        iptables -t nat -A POSTROUTING -s 10.31.1.0/24 -o $ethX -j MASQUERADE
+        iptables -t nat -A POSTROUTING -s 10.31.2.0/24 -o $ethX -j MASQUERADE
     else
         iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
         iptables -A FORWARD -s 10.31.0.0/24  -j ACCEPT

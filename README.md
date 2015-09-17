@@ -12,8 +12,9 @@ Client <—VPN—> China VPS <—Shadowsocks—>America VPS
 
 ## 注意事项
 
-1. 只支持CentOS和Ubuntu。CentOS会有小概率编译Strongswan失败，可以使用yum安装。
-2. 有些VPS网卡eth0是内网，eth1才是公网，注意修改。
+1. 只支持CentOS和Ubuntu。CentOS会有小概率编译Strongswan失败，所以使用yum安装。Ubuntu会编译安装最新版，耗时会稍长。
+2. 有些VPS网卡eth0是内网，eth1才是公网，例如阿里云，注意修改。
+3. VPN的DNS需要使用国内无污染的DNS，脚本中提供的无污染DNS不保证长期有效。
 
 ## 参考项目
 
