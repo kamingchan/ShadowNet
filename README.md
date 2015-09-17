@@ -18,8 +18,6 @@ Client <—VPN—> China VPS <—Shadowsocks—>abroad VPS
 
 ## 使用方法
 
-｀｀｀
-
 ``` shell
 wget https://raw.githubusercontent.com/bazingaterry/CHN_ROUTER_VPN/master/install.sh
 chmod +x install.sh
