@@ -25,7 +25,7 @@ function install_CHN_ROUTE_VPN()
     get_my_ip
     get_system
     pre_install
-    install_ss-libev
+    install_ss_libev
     install_strongswan
     set_iptables
 }
@@ -237,17 +237,17 @@ function pre_install()
 EOF
 }
 
-function install_ss-libev()
+function install_ss_libev()
 {
 	cd $cur_dir/shadowsocks-libev-master/
 	if [ "$system_str" = "0" ]; then
-    	install_ss-libev_CentOS
+    	install_ss_libev_CentOS
     else
-    	install_ss-libev_Ubuntu
+    	install_ss_libev_Ubuntu
     fi
 }
 
-function install_ss-libev_CentOS()
+function install_ss_libev_CentOS()
 {
 	# Build and Install shadowsocks-libev
     if [ -s /usr/local/bin/ss-redir ];then
@@ -283,7 +283,7 @@ function install_ss-libev_CentOS()
     clear
 }
 
-function install_ss-libev_Ubuntu()
+function install_ss_libev_Ubuntu()
 {
 	# Build and Install shadowsocks-libev
     if [ -s /usr/local/bin/ss-redir ];then
@@ -550,3 +550,5 @@ EOF
         chmod +x /etc/network/if-up.d/iptables
     fi
 }
+
+install_CHN_ROUTE_VPN
