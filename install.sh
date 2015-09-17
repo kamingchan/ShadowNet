@@ -318,7 +318,7 @@ install_strongswan()
     fi
 }
 
-function install_strongswan_Ubuntu()
+function install_strongswan_CentOS()
 {
     yum install strongswan -y
     cat > /etc/strongswan/ipsec.conf<<-EOF
