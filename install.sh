@@ -6,7 +6,7 @@ export PATH
 #   Description:  Install CHN ROUTE VPN for CentOS and Ubuntu
 #   Author: bazingaterry
 #   thanks to teddysun/shadowsocks_install & quericy/one-key-ikev2-vpn shell script
-#	thanks to strongswan project and shadowsocks project
+#    thanks to strongswan project and shadowsocks project
 #===============================================================================================
 
 clear
@@ -33,19 +33,19 @@ function install_CHN_ROUTE_VPN()
 # Make sure only root can run our script
 function rootness()
 {
-	if [[ $EUID -ne 0 ]]; then
-	   echo "Error:This script must be run as root!" 1>&2
-	   exit 1
-	fi
+    if [[ $EUID -ne 0 ]]; then
+       echo "Error:This script must be run as root!" 1>&2
+       exit 1
+    fi
 }
 
 # Disable selinux
 function disable_selinux()
 {
-	if [ -s /etc/selinux/config ] && grep 'SELINUX=enforcing' /etc/selinux/config; then
-	    sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
-	    setenforce 0
-	fi
+    if [ -s /etc/selinux/config ] && grep 'SELINUX=enforcing' /etc/selinux/config; then
+        sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+        setenforce 0
+    fi
 }
 
 # Get IP address of the server
@@ -137,62 +137,62 @@ function pre_install()
     fi
     # update necessary lib
     if [ "$system_str" = "0" ]; then
-    	yum -y update
-    	yum -y install pam-devel make gcc wget unzip openssl-devel gcc swig 
-    	yum -y install python python-devel python-setuptools autoconf libtool libevent
-    	yum -y install automake make curl curl-devel zlib-devel 
-    	yum -y install perl perl-devel cpio expat-devel gettext-devel
+        yum -y update
+        yum -y install pam-devel make gcc wget unzip openssl-devel gcc swig 
+        yum -y install python python-devel python-setuptools autoconf libtool libevent
+        yum -y install automake make curl curl-devel zlib-devel 
+        yum -y install perl perl-devel cpio expat-devel gettext-devel
     else
-    	apt-get -y update
-    	apt-get -y install libpam0g-dev libssl-dev make gcc wget 
-    	apt-get -y install unzip curl build-essential autoconf libtool
+        apt-get -y update
+        apt-get -y install libpam0g-dev libssl-dev make gcc wget 
+        apt-get -y install unzip curl build-essential autoconf libtool
     fi
     #Current folder
     cur_dir=`pwd`
     cd $cur_dir
     #download ss
     if [ "$system_str" = "0" ]; then
-		if [ -f shadowsocks-libev.zip ];then
-	        echo "shadowsocks-libev.zip [found]"
-	    else
-	        if ! wget --no-check-certificate https://github.com/shadowsocks/shadowsocks-libev/archive/master.zip -O shadowsocks-libev.zip;then
-	            echo "Failed to download shadowsocks-libev.zip"
-	            exit 1
-	        fi
-	    fi
-	    unzip shadowsocks-libev.zip
-	    if [ $? -eq 0 ];then
-	        echo "Unzip success"
-	    else
-	        echo "Unzip shadowsocks-libev failed!"
-	        exit 1
-	    fi
-	    # Download start script
-	    if ! wget --no-check-certificate https://raw.githubusercontent.com/bazingaterry/CHN_ROUTER_VPN/master/shadowsocks-libev; then
-	        echo "Failed to download shadowsocks-libev start script!"
-	        exit 1
-	    fi
-	else
-	    if [ -f shadowsocks-libev.zip ];then
-	        echo "shadowsocks-libev.zip [found]"
-	    else
-	        if ! wget --no-check-certificate https://github.com/shadowsocks/shadowsocks-libev/archive/master.zip -O shadowsocks-libev.zip;then
-	            echo "Failed to download shadowsocks-libev.zip"
-	            exit 1
-	        fi
-	    fi
-	    unzip shadowsocks-libev.zip
-	    if [ $? -eq 0 ];then
-	        echo "Unzip success"
-	        if ! wget --no-check-certificate https://raw.githubusercontent.com/bazingaterry/CHN_ROUTER_VPN/master/shadowsocks-libev-debian; then
-	            echo "Failed to download shadowsocks-libev start script!"
-	            exit 1
-	        fi
-	    else
-	        echo ""
-	        echo "Unzip shadowsocks-libev failed!"
-	        exit 1
-	    fi
+        if [ -f shadowsocks-libev.zip ];then
+            echo "shadowsocks-libev.zip [found]"
+        else
+            if ! wget --no-check-certificate https://github.com/shadowsocks/shadowsocks-libev/archive/master.zip -O shadowsocks-libev.zip;then
+                echo "Failed to download shadowsocks-libev.zip"
+                exit 1
+            fi
+        fi
+        unzip shadowsocks-libev.zip
+        if [ $? -eq 0 ];then
+            echo "Unzip success"
+        else
+            echo "Unzip shadowsocks-libev failed!"
+            exit 1
+        fi
+        # Download start script
+        if ! wget --no-check-certificate https://raw.githubusercontent.com/bazingaterry/CHN_ROUTER_VPN/master/shadowsocks-libev; then
+            echo "Failed to download shadowsocks-libev start script!"
+            exit 1
+        fi
+    else
+        if [ -f shadowsocks-libev.zip ];then
+            echo "shadowsocks-libev.zip [found]"
+        else
+            if ! wget --no-check-certificate https://github.com/shadowsocks/shadowsocks-libev/archive/master.zip -O shadowsocks-libev.zip;then
+                echo "Failed to download shadowsocks-libev.zip"
+                exit 1
+            fi
+        fi
+        unzip shadowsocks-libev.zip
+        if [ $? -eq 0 ];then
+            echo "Unzip success"
+            if ! wget --no-check-certificate https://raw.githubusercontent.com/bazingaterry/CHN_ROUTER_VPN/master/shadowsocks-libev-ubuntu; then
+                echo "Failed to download shadowsocks-libev start script!"
+                exit 1
+            fi
+        else
+            echo ""
+            echo "Unzip shadowsocks-libev failed!"
+            exit 1
+        fi
     fi
     #download strongswan
     if [ -f strongswan.tar.gz ];then
@@ -229,17 +229,17 @@ EOF
 
 function install_ss_libev()
 {
-	cd $cur_dir/shadowsocks-libev-master/
-	if [ "$system_str" = "0" ]; then
-    	install_ss_libev_CentOS
+    cd $cur_dir/shadowsocks-libev-master/
+    if [ "$system_str" = "0" ]; then
+        install_ss_libev_CentOS
     else
-    	install_ss_libev_Ubuntu
+        install_ss_libev_Ubuntu
     fi
 }
 
 function install_ss_libev_CentOS()
 {
-	# Build and Install shadowsocks-libev
+    # Build and Install shadowsocks-libev
     if [ -s /usr/local/bin/ss-redir ];then
         echo "shadowsocks-libev has been installed!"
         exit 0
@@ -247,7 +247,7 @@ function install_ss_libev_CentOS()
         ./configure
         make && make install
         if [ $? -eq 0 ]; then
-            mv $cur_dir/shadowsocks-libev-master/shadowsocks-libev /etc/init.d/shadowsocks
+            mv $cur_dir/shadowsocks-libev /etc/init.d/shadowsocks
             chmod +x /etc/init.d/shadowsocks
             # Add run on system start up
             chkconfig --add shadowsocks
@@ -275,7 +275,7 @@ function install_ss_libev_CentOS()
 
 function install_ss_libev_Ubuntu()
 {
-	# Build and Install shadowsocks-libev
+    # Build and Install shadowsocks-libev
     if [ -s /usr/local/bin/ss-redir ];then
         echo "shadowsocks-libev has been installed!"
         exit 0
@@ -284,7 +284,7 @@ function install_ss_libev_Ubuntu()
         make && make install
         if [ $? -eq 0 ]; then
             # Add run on system start up
-            mv $cur_dir/shadowsocks-libev-debian /etc/init.d/shadowsocks
+            mv $cur_dir/shadowsocks-libev-ubuntu /etc/init.d/shadowsocks
             chmod +x /etc/init.d/shadowsocks
             update-rc.d shadowsocks defaults
             # Run shadowsocks in the background
@@ -309,11 +309,110 @@ function install_ss_libev_Ubuntu()
     clear
 }
 
-function install_strongswan()
+install_strongswan()
 {
-	#compile strongswan
-	cd $cur_dir/strongswan-*/
-	if [ "$os" = "1" ]; then
+    if [ "$system_str" = "0" ]; then
+        install_strongswan_CentOS
+    else
+        install_strongswan_Ubuntu
+    fi
+}
+
+function install_strongswan_Ubuntu()
+{
+    yum install strongswan -y
+    cat > /etc/strongswan/ipsec.conf<<-EOF
+config setup
+    uniqueids=never 
+
+conn iOS_cert
+    keyexchange=ikev1
+    fragmentation=yes
+    left=%defaultroute
+    leftauth=pubkey
+    leftsubnet=0.0.0.0/0
+    leftcert=server.cert.pem
+    right=%any
+    rightauth=pubkey
+    rightauth2=xauth
+    rightsourceip=10.31.2.0/24
+    rightcert=client.cert.pem
+    auto=add
+
+conn android_xauth_psk
+    keyexchange=ikev1
+    left=%defaultroute
+    leftauth=psk
+    leftsubnet=0.0.0.0/0
+    right=%any
+    rightauth=psk
+    rightauth2=xauth
+    rightsourceip=10.31.2.0/24
+    auto=add
+
+conn networkmanager-strongswan
+    keyexchange=ikev2
+    left=%defaultroute
+    leftauth=pubkey
+    leftsubnet=0.0.0.0/0
+    leftcert=server.cert.pem
+    right=%any
+    rightauth=pubkey
+    rightsourceip=10.31.2.0/24
+    rightcert=client.cert.pem
+    auto=add
+
+conn windows7
+    keyexchange=ikev2
+    ike=aes256-sha1-modp1024!
+    rekey=no
+    left=%defaultroute
+    leftauth=pubkey
+    leftsubnet=0.0.0.0/0
+    leftcert=server.cert.pem
+    right=%any
+    rightauth=eap-mschapv2
+    rightsourceip=10.31.2.0/24
+    rightsendcert=never
+    eap_identity=%any
+    auto=add
+
+EOF
+
+# configure the strongswan.conf
+cat > /etc/strongswan/strongswan.conf<<-EOF
+ charon {
+        load_modular = yes
+        duplicheck.enable = no
+        compress = yes
+        plugins {
+                include strongswan.d/charon/*.conf
+        }
+        dns1 = 115.28.26.197
+        dns2 = 203.195.236.79
+        nbns1 = 8.8.8.8
+        nbns2 = 8.8.4.4
+}
+include strongswan.d/*.conf
+EOF
+
+# configure the ipsec.secrets
+    cat > /etc/strongswan/ipsec.secrets<<-EOF
+: RSA server.pem
+: PSK "myPSKkey"
+: XAUTH "myXAUTHPass"
+myUserName %any : EAP "myUserPass"
+EOF
+
+    chkconfig strongswan on
+    service strongswan start
+}
+
+function install_strongswan_Ubuntu()
+{
+    #compile strongswan
+    cd $cur_dir/strongswan-*/
+    if [ "$os" = "1" ]; then
         ./configure  --enable-eap-identity --enable-eap-md5 \
 --enable-eap-mschapv2 --enable-eap-tls --enable-eap-ttls --enable-eap-peap  \
 --enable-eap-tnc --enable-eap-dynamic --enable-eap-radius --enable-xauth-eap  \
@@ -451,16 +550,18 @@ EOF
 : XAUTH "myXAUTHPass"
 myUserName %any : EAP "myUserPass"
 EOF
+
+    ipsec start
 }
 
 function set_iptables()
 {
-	# set ss iptables
-	iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport ${shadowsocksport} -j ACCEPT
+    # set ss iptables
+    iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport ${shadowsocksport} -j ACCEPT
 
-	# set strongswan
-	sysctl -w net.ipv4.ip_forward=1
-	if [ "$os" = "1" ]; then
+    # set strongswan
+    sysctl -w net.ipv4.ip_forward=1
+    if [ "$os" = "1" ]; then
         iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
         iptables -A FORWARD -s 10.31.0.0/24  -j ACCEPT
         iptables -A FORWARD -s 10.31.1.0/24  -j ACCEPT
@@ -495,30 +596,29 @@ function set_iptables()
     # set chn route
     iptables -t nat -N SHADOWSOCKS
     iptables -t nat -N SHADOWSOCKS
-	iptables -t nat -A SHADOWSOCKS -d $server -j RETURN
-	iptables -t nat -A SHADOWSOCKS -d 0.0.0.0/8 -j RETURN
-	iptables -t nat -A SHADOWSOCKS -d 10.0.0.0/8 -j RETURN
-	iptables -t nat -A SHADOWSOCKS -d 127.0.0.0/8 -j RETURN
-	iptables -t nat -A SHADOWSOCKS -d 169.254.0.0/16 -j RETURN
-	iptables -t nat -A SHADOWSOCKS -d 172.16.0.0/12 -j RETURN
-	iptables -t nat -A SHADOWSOCKS -d 192.168.0.0/16 -j RETURN
-	iptables -t nat -A SHADOWSOCKS -d 224.0.0.0/4 -j RETURN
-	iptables -t nat -A SHADOWSOCKS -d 240.0.0.0/4 -j RETURN
+    iptables -t nat -A SHADOWSOCKS -d $server -j RETURN
+    iptables -t nat -A SHADOWSOCKS -d 0.0.0.0/8 -j RETURN
+    iptables -t nat -A SHADOWSOCKS -d 10.0.0.0/8 -j RETURN
+    iptables -t nat -A SHADOWSOCKS -d 127.0.0.0/8 -j RETURN
+    iptables -t nat -A SHADOWSOCKS -d 169.254.0.0/16 -j RETURN
+    iptables -t nat -A SHADOWSOCKS -d 172.16.0.0/12 -j RETURN
+    iptables -t nat -A SHADOWSOCKS -d 192.168.0.0/16 -j RETURN
+    iptables -t nat -A SHADOWSOCKS -d 224.0.0.0/4 -j RETURN
+    iptables -t nat -A SHADOWSOCKS -d 240.0.0.0/4 -j RETURN
 
-	wget -O- 'http://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest' | awk -F\| '/CN\|ipv4/ { printf("%s/%d\n", $4, 32-log($5)/log(2)) }' > $cur_dir/ignore.list
+    wget -O- 'http://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest' | awk -F\| '/CN\|ipv4/ { printf("%s/%d\n", $4, 32-log($5)/log(2)) }' > $cur_dir/ignore.list
 
-	while read -r line
-	do
-	   sudo iptables -t nat -A SHADOWSOCKS -d $line -j RETURN
-	   echo $line
-	done < $cur_dir/ignore.list
+    while read -r line
+    do
+       sudo iptables -t nat -A SHADOWSOCKS -d $line -j RETURN
+    done < $cur_dir/ignore.list
 
-	iptables -t nat -A SHADOWSOCKS -p tcp -j REDIRECT --to-ports 1080
-	iptables -t nat -A OUTPUT -p tcp -j SHADOWSOCKS
-	iptables -t nat -A PREROUTING -p tcp -j SHADOWSOCKS
+    iptables -t nat -A SHADOWSOCKS -p tcp -j REDIRECT --to-ports 1080
+    iptables -t nat -A OUTPUT -p tcp -j SHADOWSOCKS
+    iptables -t nat -A PREROUTING -p tcp -j SHADOWSOCKS
 
-	# save iptables
-	if [ "$system_str" = "0" ]; then
+    # save iptables
+    if [ "$system_str" = "0" ]; then
         service iptables save
     else
         iptables-save > /etc/iptables.rules
