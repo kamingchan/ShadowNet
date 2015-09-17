@@ -147,16 +147,6 @@ function pre_install()
     	apt-get -y install libpam0g-dev libssl-dev make gcc wget 
     	apt-get -y install unzip curl build-essential autoconf libtool
     fi
-    get_char(){
-        SAVEDSTTY=`stty -g`
-        stty -echo
-        stty cbreak
-        dd if=/dev/tty bs=1 count=1 2> /dev/null
-        stty -raw
-        stty echo
-        stty $SAVEDSTTY
-    }
-    char=`get_char`
     #Current folder
     cur_dir=`pwd`
     cd $cur_dir
@@ -228,11 +218,11 @@ function pre_install()
 {
     "server":"${server}",
     "server_port":${shadowsocksport},
-    "local_address":"127.0.0.1",
+    "local_address":"0.0.0.0",
     "local_port":1080,
     "password":"${shadowsockspwd}",
     "timeout":600,
-    "method":"${method}"
+    "method":"${shadowsocksmethod}"
 }
 EOF
 }
@@ -294,7 +284,7 @@ function install_ss_libev_Ubuntu()
         make && make install
         if [ $? -eq 0 ]; then
             # Add run on system start up
-            mv $cur_dir/shadowsocks-libev-master/shadowsocks-libev-debian /etc/init.d/shadowsocks
+            mv $cur_dir/shadowsocks-libev-debian /etc/init.d/shadowsocks
             chmod +x /etc/init.d/shadowsocks
             update-rc.d shadowsocks defaults
             # Run shadowsocks in the background
@@ -372,17 +362,6 @@ function install_strongswan()
     ipsec pki --pub --in client.pem | ipsec pki --issue --cacert ca.cert.pem --cakey ca.pem --dn "C=${my_cert_c}, O=${my_cert_o}, CN=VPN Client" --outform pem > client.cert.pem
     echo "configure the pkcs12 cert password(Can be empty):"
     openssl pkcs12 -export -inkey client.pem -in client.cert.pem -name "client" -certfile ca.cert.pem -caname "${my_cert_cn}"  -out client.cert.p12
-    echo "####################################"
-    get_char(){
-        SAVEDSTTY=`stty -g`
-        stty -echo
-        stty cbreak
-        dd if=/dev/tty bs=1 count=1 2> /dev/null
-        stty -raw
-        stty echo
-        stty $SAVEDSTTY
-    }
-    echo "Press any key to install ikev2 VPN cert"
     cp -r ca.cert.pem /usr/local/etc/ipsec.d/cacerts/
     cp -r server.cert.pem /usr/local/etc/ipsec.d/certs/
     cp -r server.pem /usr/local/etc/ipsec.d/private/
