@@ -88,41 +88,43 @@ function pre_install()
     if [ "$os_choice" = "1" ]; then
         os="1"
         os_str="Xen、KVM"
+    else
+        if [ "$os_choice" = "2" ]; then
+            os="2"
+            os_str="OpenVZ"
         else
-            if [ "$os_choice" = "2" ]; then
-                os="2"
-                os_str="OpenVZ"
-                else
-                echo "wrong choice!"
-                exit 1
-            fi
+            echo "wrong choice!"
+            exit 1
+        fi
     fi
     echo ""
-    echo "please input the ip of your abroad VPS:"
-    read -p "ip of abroad VPS:" server
+    echo "please input the IP of your shadowsocks server:"
+    read -p "IP of shadowsocks server:" server
     if [ "$server" = "" ]; then
         exit 1
     fi
-    echo ""
-    echo "Please input number of public network:"
-    read -p "(Default eth0):" ethX
-    if [ "$ethX" = "" ]; then
-        ethX="eth0"
+    if [ "$os" = "1" ]; then
+        echo ""
+        echo "Please input name of public network:"
+        read -p "(Default eth0):" ethX
+        if [ "$ethX" = "" ]; then
+            ethX="eth0"
+        fi
     fi
     echo ""
-    echo "Please input password for shadowsocks-libev:"
+    echo "Please input password for shadowsocks:"
     read -p "(Default password: myss):" shadowsockspwd
     if [ "$shadowsockspwd" = "" ]; then
         shadowsockspwd="myss"
     fi
     echo ""
-    echo -e "Please input port for shadowsocks-libev:"
+    echo -e "Please input port for shadowsocks:"
     read -p "(Default password: 443):" shadowsocksport
     if [ "$shadowsocksport" = "" ]; then
         shadowsocksport="443"
     fi
     echo ""
-    echo -e "Please input method for shadowsocks-libev:"
+    echo -e "Please input method for shadowsocks:"
     read -p "(Default method: chacha20):" shadowsocksmethod
     if [ "$shadowsocksmethod" = "" ]; then
         shadowsocksmethod="chacha20"
