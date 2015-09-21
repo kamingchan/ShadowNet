@@ -226,6 +226,7 @@ function install_ss_libev_CentOS()
             exit 1
         fi
         # compile ss
+        cd shadowsocks-libev-master
         ./configure
         make && make install
         if [ $? -eq 0 ]; then
