@@ -334,7 +334,7 @@ function install_strongswan_CentOS()
     else
         echo -e "ca.pem [\033[32;1mauto create\032[0m]"
         echo "auto create ca.pem ..."
-        ipsec pki --gen --outform pem > ca.pem
+        strongswan pki --gen --outform pem > ca.pem
     fi
     
     if [ -f ca.cert.pem ];then
@@ -342,7 +342,7 @@ function install_strongswan_CentOS()
     else
         echo -e "ca.cert.pem [\032[33;1mauto create\032[0m]"
         echo "auto create ca.cert.pem ..."
-        ipsec pki --self --in ca.pem --dn "C=${my_cert_c}, O=${my_cert_o}, CN=${my_cert_cn}" --ca --outform pem >ca.cert.pem
+        strongswan pki --self --in ca.pem --dn "C=${my_cert_c}, O=${my_cert_o}, CN=${my_cert_cn}" --ca --outform pem >ca.cert.pem
     fi
     if [ ! -d my_key ];then
         mkdir my_key
@@ -350,13 +350,13 @@ function install_strongswan_CentOS()
     mv ca.pem my_key/ca.pem
     mv ca.cert.pem my_key/ca.cert.pem
     cd my_key
-    ipsec pki --gen --outform pem > server.pem  
-    ipsec pki --pub --in server.pem | ipsec pki --issue --cacert ca.cert.pem \
+    strongswan pki --gen --outform pem > server.pem  
+    strongswan pki --pub --in server.pem | strongswan pki --issue --cacert ca.cert.pem \
 --cakey ca.pem --dn "C=${my_cert_c}, O=${my_cert_o}, CN=${vps_ip}" \
 --san="${vps_ip}" --flag serverAuth --flag ikeIntermediate \
 --outform pem > server.cert.pem
-    ipsec pki --gen --outform pem > client.pem  
-    ipsec pki --pub --in client.pem | ipsec pki --issue --cacert ca.cert.pem --cakey ca.pem --dn "C=${my_cert_c}, O=${my_cert_o}, CN=VPN Client" --outform pem > client.cert.pem
+    strongswan pki --gen --outform pem > client.pem  
+    strongswan pki --pub --in client.pem | strongswan pki --issue --cacert ca.cert.pem --cakey ca.pem --dn "C=${my_cert_c}, O=${my_cert_o}, CN=VPN Client" --outform pem > client.cert.pem
     echo "configure the pkcs12 cert password(Can be empty):"
     openssl pkcs12 -export -inkey client.pem -in client.cert.pem -name "client" -certfile ca.cert.pem -caname "${my_cert_cn}"  -out client.cert.p12
     cp -r ca.cert.pem /etc/strongswan/ipsec.d/cacerts/
