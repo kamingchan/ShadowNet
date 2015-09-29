@@ -6,7 +6,7 @@ export PATH
 #   Description:  Install CHN ROUTE VPN for CentOS and Ubuntu
 #   Author: bazingaterry
 #   thanks to teddysun/shadowsocks_install & quericy/one-key-ikev2-vpn shell script
-#    thanks to strongswan project and shadowsocks project
+#   thanks to strongswan project and shadowsocks project
 #===============================================================================================
 
 clear
@@ -51,7 +51,7 @@ function disable_selinux()
 # Get IP address of the server
 function get_my_ip()
 {
-    echo "Preparing, Please wait a moment..."
+    echo "Getting your IP address, Please wait a moment..."
     IP=`curl -s checkip.dyndns.com | cut -d' ' -f 6  | cut -d'<' -f 1`
     if [ -z $IP ]; then
         IP=`curl -s ifconfig.me/ip`
@@ -105,7 +105,7 @@ function pre_install()
     fi
     if [ "$os" = "1" ]; then
         echo ""
-        echo "Please input name of public network:"
+        echo "Please input the network card of public network:"
         read -p "(Default eth0):" ethX
         if [ "$ethX" = "" ]; then
             ethX="eth0"
@@ -225,7 +225,7 @@ function install_ss_libev_CentOS()
             echo "Failed to download shadowsocks-libev start script!"
             exit 1
         fi
-        # compile ss
+        # Compile shadowsocks-libev
         cd shadowsocks-libev-master
         ./configure
         make && make install
@@ -326,6 +326,45 @@ install_strongswan()
 function install_strongswan_CentOS()
 {
     yum install strongswan -y
+
+    #set key
+    cd $cur_dir
+    if [ -f ca.pem ];then
+        echo -e "ca.pem [\033[32;1mfound\033[0m]"
+    else
+        echo -e "ca.pem [\033[32;1mauto create\032[0m]"
+        echo "auto create ca.pem ..."
+        ipsec pki --gen --outform pem > ca.pem
+    fi
+    
+    if [ -f ca.cert.pem ];then
+        echo -e "ca.cert.pem [\033[32;1mfound\033[0m]"
+    else
+        echo -e "ca.cert.pem [\032[33;1mauto create\032[0m]"
+        echo "auto create ca.cert.pem ..."
+        ipsec pki --self --in ca.pem --dn "C=${my_cert_c}, O=${my_cert_o}, CN=${my_cert_cn}" --ca --outform pem >ca.cert.pem
+    fi
+    if [ ! -d my_key ];then
+        mkdir my_key
+    fi
+    mv ca.pem my_key/ca.pem
+    mv ca.cert.pem my_key/ca.cert.pem
+    cd my_key
+    ipsec pki --gen --outform pem > server.pem  
+    ipsec pki --pub --in server.pem | ipsec pki --issue --cacert ca.cert.pem \
+--cakey ca.pem --dn "C=${my_cert_c}, O=${my_cert_o}, CN=${vps_ip}" \
+--san="${vps_ip}" --flag serverAuth --flag ikeIntermediate \
+--outform pem > server.cert.pem
+    ipsec pki --gen --outform pem > client.pem  
+    ipsec pki --pub --in client.pem | ipsec pki --issue --cacert ca.cert.pem --cakey ca.pem --dn "C=${my_cert_c}, O=${my_cert_o}, CN=VPN Client" --outform pem > client.cert.pem
+    echo "configure the pkcs12 cert password(Can be empty):"
+    openssl pkcs12 -export -inkey client.pem -in client.cert.pem -name "client" -certfile ca.cert.pem -caname "${my_cert_cn}"  -out client.cert.p12
+    cp -r ca.cert.pem /etc/strongswan/ipsec.d/cacerts/
+    cp -r server.cert.pem /etc/strongswan/ipsec.d/certs/
+    cp -r server.pem /etc/strongswan/ipsec.d/private/
+    cp -r client.cert.pem /etc/strongswan/ipsec.d/certs/
+    cp -r client.pem  /etc/strongswan/ipsec.d/private/
+
     cat > /etc/strongswan/ipsec.conf<<-EOF
 config setup
     uniqueids=never 
@@ -577,7 +616,7 @@ EOF
 
 function set_iptables()
 {
-    # set ss iptables
+    # set shadowsocks iptables
     iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport ${shadowsocksport} -j ACCEPT
 
     # set strongswan
