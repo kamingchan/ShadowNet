@@ -26,7 +26,7 @@ bash install.sh
 
 注意选对VPS类型，填写公网网卡（如eth0），Shadowsocks的服务器地址、端口、密码、加密方式，其余可以保持默认值。
 
-修改VPN的帐号密码，CentOS在`/usr/local/etc/ipsec.secrets`，Ubuntu在`/usr/local/etc/ipsec.secrets`。
+修改VPN的帐号密码，CentOS在`/etc/strongswan/ipsec.secrets`，Ubuntu在`/usr/local/etc/ipsec.secrets`。
 
 ## 参考项目
 
