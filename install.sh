@@ -670,7 +670,7 @@ function set_iptables()
 
     while read -r line
     do
-       sudo iptables -t nat -A SHADOWSOCKS -d $line -j RETURN
+       iptables -t nat -A SHADOWSOCKS -d $line -j RETURN
     done < $cur_dir/ignore.list
 
     iptables -t nat -A SHADOWSOCKS -p tcp -j REDIRECT --to-ports 1080
