@@ -21,7 +21,7 @@ Client <—VPN—> China VPS <—Shadowsocks—>abroad VPS
 ``` shell
 wget https://raw.githubusercontent.com/bazingaterry/CHN_ROUTER_VPN/master/install.sh
 chmod +x install.sh
-bash install.sh
+sudo bash install.sh
 ```
 
 注意选对VPS类型，填写公网网卡（如eth0），Shadowsocks的服务器地址、端口、密码、加密方式，其余可以保持默认值。
