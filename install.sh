@@ -655,7 +655,6 @@ function set_iptables()
 
     # set chn route
     iptables -t nat -N SHADOWSOCKS
-    iptables -t nat -N SHADOWSOCKS
     iptables -t nat -A SHADOWSOCKS -d $server -j RETURN
     iptables -t nat -A SHADOWSOCKS -d 0.0.0.0/8 -j RETURN
     iptables -t nat -A SHADOWSOCKS -d 10.0.0.0/8 -j RETURN
