@@ -24,9 +24,9 @@ chmod +x install.sh
 sudo bash install.sh
 ```
 
-注意选对VPS类型，填写公网网卡（如 eth0），Shadowsocks 的服务器地址、端口、密码、加密方式，其余可以保持默认值。
+注意选对 VPS 类型，填写公网网卡（如 eth0），Shadowsocks 的服务器地址、端口、密码、加密方式，其余可以保持默认值。
 
-修改VPN的帐号密码，CentOS在 `/etc/strongswan/ipsec.secrets`，Ubuntu在 `/usr/local/etc/ipsec.secrets`。
+修改 VPN 的帐号密码，CentOS 在 `/etc/strongswan/ipsec.secrets`，Ubuntu在 `/usr/local/etc/ipsec.secrets`。
 
 ## 参考项目
 
