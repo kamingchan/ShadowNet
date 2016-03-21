@@ -75,7 +75,7 @@ function get_system()
             echo "This Script must be running at the CentOS or Ubuntu!"
             exit 1
         fi
-    fi  
+    fi
 }
 
 # Pre-installation settings
@@ -157,13 +157,13 @@ function pre_install()
     # update necessary lib
     if [ "$system_str" = "0" ]; then
         yum -y update
-        yum -y install pam-devel make gcc wget unzip openssl-devel gcc swig 
+        yum -y install pam-devel make gcc wget unzip openssl-devel gcc swig
         yum -y install python python-devel python-setuptools autoconf libtool libevent
-        yum -y install automake make curl curl-devel zlib-devel 
+        yum -y install automake make curl curl-devel zlib-devel
         yum -y install perl perl-devel cpio expat-devel gettext-devel
     else
         apt-get -y update
-        apt-get -y install libpam0g-dev libssl-dev make gcc wget 
+        apt-get -y install libpam0g-dev libssl-dev make gcc wget
         apt-get -y install unzip curl build-essential autoconf libtool
     fi
     # get Current folder
@@ -336,7 +336,7 @@ function install_strongswan_CentOS()
         echo "auto create ca.pem ..."
         strongswan pki --gen --outform pem > ca.pem
     fi
-    
+
     if [ -f ca.cert.pem ];then
         echo -e "ca.cert.pem [\033[32;1mfound\033[0m]"
     else
@@ -350,12 +350,12 @@ function install_strongswan_CentOS()
     mv ca.pem my_key/ca.pem
     mv ca.cert.pem my_key/ca.cert.pem
     cd my_key
-    strongswan pki --gen --outform pem > server.pem  
+    strongswan pki --gen --outform pem > server.pem
     strongswan pki --pub --in server.pem | strongswan pki --issue --cacert ca.cert.pem \
 --cakey ca.pem --dn "C=${my_cert_c}, O=${my_cert_o}, CN=${vps_ip}" \
 --san="${vps_ip}" --flag serverAuth --flag ikeIntermediate \
 --outform pem > server.cert.pem
-    strongswan pki --gen --outform pem > client.pem  
+    strongswan pki --gen --outform pem > client.pem
     strongswan pki --pub --in client.pem | strongswan pki --issue --cacert ca.cert.pem --cakey ca.pem --dn "C=${my_cert_c}, O=${my_cert_o}, CN=VPN Client" --outform pem > client.cert.pem
     echo "configure the pkcs12 cert password(Can be empty):"
     openssl pkcs12 -export -inkey client.pem -in client.cert.pem -name "client" -certfile ca.cert.pem -caname "${my_cert_cn}"  -out client.cert.p12
@@ -367,7 +367,7 @@ function install_strongswan_CentOS()
 
     cat > /etc/strongswan/ipsec.conf<<-EOF
 config setup
-    uniqueids=never 
+    uniqueids=never
 
 conn iOS_cert
     keyexchange=ikev1
@@ -382,6 +382,21 @@ conn iOS_cert
     rightsourceip=10.31.2.0/24
     rightcert=client.cert.pem
     auto=add
+
+conn iOS_ikev2
+    auto=add
+    dpdaction=clear
+    keyexchange=ikev2
+    left=%defaultroute
+    leftsubnet=0.0.0.0/0
+    leftauth=psk
+    leftid=32service
+    right=%any
+    rightsourceip=10.31.2.0/24
+    rightauth=eap-mschapv2
+    rightid=32service
+    ike=aes256-sha1-modp1024,aes128-sha1-modp1024,3des-sha1-modp1024!
+    esp=aes256-sha256,aes256-sha1,3des-sha1!
 
 conn android_xauth_psk
     keyexchange=ikev1
@@ -498,7 +513,7 @@ function install_strongswan_Ubuntu()
         echo "auto create ca.pem ..."
         ipsec pki --gen --outform pem > ca.pem
     fi
-    
+
     if [ -f ca.cert.pem ];then
         echo -e "ca.cert.pem [\033[32;1mfound\033[0m]"
     else
@@ -512,12 +527,12 @@ function install_strongswan_Ubuntu()
     mv ca.pem my_key/ca.pem
     mv ca.cert.pem my_key/ca.cert.pem
     cd my_key
-    ipsec pki --gen --outform pem > server.pem  
+    ipsec pki --gen --outform pem > server.pem
     ipsec pki --pub --in server.pem | ipsec pki --issue --cacert ca.cert.pem \
 --cakey ca.pem --dn "C=${my_cert_c}, O=${my_cert_o}, CN=${vps_ip}" \
 --san="${vps_ip}" --flag serverAuth --flag ikeIntermediate \
 --outform pem > server.cert.pem
-    ipsec pki --gen --outform pem > client.pem  
+    ipsec pki --gen --outform pem > client.pem
     ipsec pki --pub --in client.pem | ipsec pki --issue --cacert ca.cert.pem --cakey ca.pem --dn "C=${my_cert_c}, O=${my_cert_o}, CN=VPN Client" --outform pem > client.cert.pem
     echo "configure the pkcs12 cert password(Can be empty):"
     openssl pkcs12 -export -inkey client.pem -in client.cert.pem -name "client" -certfile ca.cert.pem -caname "${my_cert_cn}"  -out client.cert.p12
@@ -526,11 +541,11 @@ function install_strongswan_Ubuntu()
     cp -r server.pem /usr/local/etc/ipsec.d/private/
     cp -r client.cert.pem /usr/local/etc/ipsec.d/certs/
     cp -r client.pem  /usr/local/etc/ipsec.d/private/
-    
+
     #configure the ipsec.conf
     cat > /usr/local/etc/ipsec.conf<<-EOF
 config setup
-    uniqueids=never 
+    uniqueids=never
 
 conn iOS_cert
     keyexchange=ikev1
@@ -545,6 +560,21 @@ conn iOS_cert
     rightsourceip=10.31.2.0/24
     rightcert=client.cert.pem
     auto=add
+
+conn iOS_ikev2
+    auto=add
+    dpdaction=clear
+    keyexchange=ikev2
+    left=%defaultroute
+    leftsubnet=0.0.0.0/0
+    leftauth=psk
+    leftid=32service
+    right=%any
+    rightsourceip=10.31.2.0/24
+    rightauth=eap-mschapv2
+    rightid=32service
+    ike=aes256-sha1-modp1024,aes128-sha1-modp1024,3des-sha1-modp1024!
+    esp=aes256-sha256,aes256-sha1,3des-sha1!
 
 conn android_xauth_psk
     keyexchange=ikev1
