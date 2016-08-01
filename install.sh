@@ -208,7 +208,7 @@ function install_ss_libev_CentOS()
         if [ -f shadowsocks-libev.zip ];then
             echo "shadowsocks-libev.zip [found]"
         else
-            if ! wget --no-check-certificate https://github.com/shadowsocks/shadowsocks-libev/archive/master.zip -O shadowsocks-libev.zip;then
+            if ! wget --no-check-certificate https://github.com/shadowsocks/shadowsocks-libev/archive/v2.4.7.zip -O shadowsocks-libev.zip;then
                 echo "Failed to download shadowsocks-libev.zip"
                 exit 1
             fi
@@ -267,7 +267,7 @@ function install_ss_libev_Ubuntu()
         if [ -f shadowsocks-libev.zip ];then
             echo "shadowsocks-libev.zip [found]"
         else
-            if ! wget --no-check-certificate https://github.com/shadowsocks/shadowsocks-libev/archive/master.zip -O shadowsocks-libev.zip;then
+            if ! wget --no-check-certificate https://github.com/shadowsocks/shadowsocks-libev/archive/v2.4.7.zip -O shadowsocks-libev.zip;then
                 echo "Failed to download shadowsocks-libev.zip"
                 exit 1
             fi
