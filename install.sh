@@ -18,6 +18,8 @@ echo "#"
 echo "#############################################################"
 echo ""
 
+shadowsocks_ver="2.4.7"
+
 function install_CHN_ROUTE_VPN()
 {
     rootness
@@ -208,8 +210,8 @@ function install_ss_libev_CentOS()
         if [ -f shadowsocks-libev.zip ];then
             echo "shadowsocks-libev.zip [found]"
         else
-            if ! wget --no-check-certificate https://github.com/shadowsocks/shadowsocks-libev/archive/v2.4.7.zip -O shadowsocks-libev.zip;then
-                echo "Failed to download shadowsocks-libev.zip"
+            if ! wget --no-check-certificate https://github.com/shadowsocks/shadowsocks-libev/archive/v${shadowsocks_ver}.zip -O shadowsocks-libev.zip;then
+                echo "Failed to download shadowsocks-${shadowsocks_ver}.zip"
                 exit 1
             fi
         fi
@@ -226,7 +228,7 @@ function install_ss_libev_CentOS()
             exit 1
         fi
         # Compile shadowsocks-libev
-        cd shadowsocks-libev-master
+        cd shadowsocks-libev-${shadowsocks_ver}
         ./configure
         make && make install
         if [ $? -eq 0 ]; then
@@ -267,8 +269,8 @@ function install_ss_libev_Ubuntu()
         if [ -f shadowsocks-libev.zip ];then
             echo "shadowsocks-libev.zip [found]"
         else
-            if ! wget --no-check-certificate https://github.com/shadowsocks/shadowsocks-libev/archive/v2.4.7.zip -O shadowsocks-libev.zip;then
-                echo "Failed to download shadowsocks-libev.zip"
+            if ! wget --no-check-certificate https://github.com/shadowsocks/shadowsocks-libev/archive/v${shadowsocks_ver}.zip -O shadowsocks-libev.zip;then
+                echo "Failed to download shadowsocks-${shadowsocks_ver}.zip"
                 exit 1
             fi
         fi
@@ -284,7 +286,7 @@ function install_ss_libev_Ubuntu()
             exit 1
         fi
         # compile ss
-        cd shadowsocks-libev-master
+        cd shadowsocks-libev-${shadowsocks_ver}
         ./configure
         make && make install
         if [ $? -eq 0 ]; then
