@@ -121,7 +121,7 @@ function pre_install()
     fi
     echo ""
     echo -e "Please input port for shadowsocks:"
-    read -p "(Default password: 443):" shadowsocksport
+    read -p "(Default port: 443):" shadowsocksport
     if [ "$shadowsocksport" = "" ]; then
         shadowsocksport="443"
     fi
