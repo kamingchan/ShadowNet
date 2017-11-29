@@ -1,8 +1,8 @@
-# CHN_Router_VPN
+# ShadowNet
 
 ## 架构
 
-Client <—VPN—> China VPS <—Shadowsocks—>abroad VPS
+Client <—VPN—> China VPS <—Shadowsocks—>Oversea VPS
 
 ## 优点
 
