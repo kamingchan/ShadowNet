@@ -1,4 +1,4 @@
-# ShadowNet
+# ShadowNet(deprecated)
 
 ## 架构
 
